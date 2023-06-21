@@ -1,0 +1,48 @@
+import requests
+
+API_KEY = 'YOUR_API_KEY'  # Replace with your OpenWeatherMap API key
+
+def get_weather_data(city, start_date, end_date):
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city},DK&appid={API_KEY}&units=metric'
+    response = requests.get(url)
+    data = response.json()
+
+    # Extract relevant weather information
+    weather = {
+        'date': start_date,
+        'temperature': data['main']['temp'],
+        'description': data['weather'][0]['description']
+    }
+
+    print_weather_data(weather)
+
+    # Increment the date until reaching the end date
+    while start_date < end_date:
+        start_date += timedelta(days=1)
+        url = f'http://api.openweathermap.org/data/2.5/weather?q={city},DK&appid={API_KEY}&units=metric'
+        response = requests.get(url)
+        data = response.json()
+
+        # Extract relevant weather information
+        weather = {
+            'date': start_date,
+            'temperature': data['main']['temp'],
+            'description': data['weather'][0]['description']
+        }
+
+        print_weather_data(weather)
+
+def print_weather_data(weather):
+    print(f"Date: {weather['date']}")
+    print(f"Temperature: {weather['temperature']} °C")
+    print(f"Description: {weather['description']}")
+    print()
+
+# Example usage
+from datetime import datetime, timedelta
+
+city = 'Copenhagen'
+start_date = datetime(2023, 7, 1)
+end_date = datetime(2023, 8, 31)
+
+get_weather_data(city, start_date, end_date)
